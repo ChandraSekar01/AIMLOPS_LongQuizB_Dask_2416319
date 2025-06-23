@@ -1,0 +1,96 @@
+# Dask ML Pipeline Configuration
+
+# Data Configuration
+paths:
+  # Dataset paths
+  data:
+    train: "data/raw/train"
+    test: "data/raw/test"
+    prep_train: "data/preprocess/train"
+    prep_test: "data/preprocess/test"
+  model: "models"
+  results: "results"
+
+# Dask Configuration
+dask:
+  # Cluster configuration
+  cluster:
+    type: "local"  # Options: "local", "distributed", "kubernetes"
+    n_workers: 4   # Number of workers for local cluster
+    threads_per_worker: 2
+    memory_limit: "4GB"
+
+# Preprocessing Configuration
+preprocessing:
+  handle_missing: true
+  filter_outliers:
+    trip_duration:
+      min: 60
+      max: 7200
+    passenger_count:
+      min: 1
+      max: 7
+  features:
+    - hour
+    - passenger_count
+    - trip_distance
+    - trip_duration
+  datetime_columns:
+    - pickup_datetime
+    - dropoff_datetime
+  
+
+# Model Configuration
+model:
+  # Model selection
+  type: "classification"  # Options: "classification", "regression"
+  
+  # Model hyperparameters
+  hyperparameters:
+    random_forest:
+      n_estimators: 100
+      max_depth: 10
+      min_samples_split: 2
+    
+    gradient_boosting:
+      n_estimators: 100
+      learning_rate: 0.1
+      max_depth: 3
+    
+    neural_network:
+      hidden_layers: [128, 64]
+      activation: "relu"
+      dropout: 0.2
+      learning_rate: 0.001
+      batch_size: 32
+      epochs: 10
+
+# Evaluation Configuration
+evaluation:
+  metrics:
+    classification: ["accuracy", "precision", "recall", "f1", "roc_auc"]
+    regression: ["mse", "mae", "r2"]
+  
+  # Comparison with traditional approach
+  comparison:
+    enabled: true
+    traditional_library: "scikit-learn"  # Options: "scikit-learn", "tensorflow", "pytorch"
+
+# Visualization Configuration
+visualization:
+  plots:
+    performance: true
+    confusion_matrix: true
+    learning_curves: true
+    feature_importance: true
+  
+  # Interactive dashboard
+  dashboard:
+    enabled: true
+    port: 8050
+
+# Logging Configuration
+logging:
+  level: "INFO"  # Options: "DEBUG", "INFO", "WARNING", "ERROR"
+  save_path: "logs/"
+  save_format: "json"
